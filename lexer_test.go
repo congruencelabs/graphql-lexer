@@ -56,7 +56,7 @@ func TestSDLLexerForTypeDef(t *testing.T) {
 	}
 
 	for i, ti := range tests {
-		tok := NextToken()
+		tok := lex.NextToken()
 		if tok.Type != ti.expectedType {
 			t.Errorf("Failed to parse Token Type correctly. Expected %s Actual %s in test %d",
 				ti.expectedType,
@@ -86,7 +86,7 @@ func TestSDLLexerForQuery(t *testing.T) {
 	}
 `
 
-	lexer := NewLexer(input)
+	lex := NewLexer(input)
 
 	tests := []struct{
 		expectedLiteral string
@@ -109,7 +109,7 @@ func TestSDLLexerForQuery(t *testing.T) {
 	}
 
 	for i, ti := range tests {
-		tok := NextToken()
+		tok := lex.NextToken()
 		if tok.Type != ti.expectedType {
 			t.Errorf("Failed to parse Token Type correctly. Expected %s Actual %s in test %d",
 				ti.expectedType,
