@@ -1,0 +1,10 @@
+language: go
+
+dist: xenial
+
+go:
+- 1.12.x
+- master
+
+script:
+  - go test -v ./...
