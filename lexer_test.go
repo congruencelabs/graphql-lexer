@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestSDLLexerForTypeDef(t *testing.T) {
+func TestLexerForTypeDef(t *testing.T) {
 	input := `
 	type Query {
 		product(id!: Int): Product
@@ -74,8 +74,71 @@ func TestSDLLexerForTypeDef(t *testing.T) {
 	}
 }
 
+func TestLexerForUnionType(t *testing.T) {
+	input := `
+	type Cat {
+		name: String!
+	}
 
-func TestSDLLexerForQuery(t *testing.T) {
+	type Dog {
+		name: String!
+	}
+
+	union Animal = Cat | Dog
+`
+
+	lex := NewLexer(input)
+
+	tests := []struct{
+		expectedLiteral string
+		expectedType    TokenType
+	}{
+		{"type", TYPE},
+		{"Cat", IDENTIFIER},
+		{"{", LBRACE},
+		{"name", IDENTIFIER},
+		{":", COLON},
+		{"String", STRING},
+		{"!", BANG},
+		{"}", RBRACE},
+
+		{"type", TYPE},
+		{"Dog", IDENTIFIER},
+		{"{", LBRACE},
+		{"name", IDENTIFIER},
+		{":", COLON},
+		{"String", STRING},
+		{"!", BANG},
+		{"}", RBRACE},
+
+		{"union", UNION},
+		{"Animal", IDENTIFIER},
+		{"=", EQUALS},
+		{"Cat", IDENTIFIER},
+		{"|", PIPE},
+		{"Dog", IDENTIFIER},
+	}
+
+	for i, ti := range tests {
+		tok := lex.NextToken()
+		if tok.Type != ti.expectedType {
+			t.Errorf("Failed to parse Token Type correctly. Expected %s Actual %s in test %d",
+				ti.expectedType,
+				tok.Type,
+				i + 1)
+		}
+
+		if tok.Literal != ti.expectedLiteral{
+			t.Errorf(
+				"Failed to parse Token Literal correctly. Expected %s Actual %s in test %d",
+				ti.expectedLiteral,
+				tok.Literal,
+				i + 1)
+		}
+	}
+}
+
+func TestLexerForQuery(t *testing.T) {
 	input := `
 	query {
 		product(id: "dummy") {
@@ -127,3 +190,52 @@ func TestSDLLexerForQuery(t *testing.T) {
 	}
 }
 
+func TestLexerForMutation(t *testing.T) {
+	input := `
+	mutation {
+		addProduct(input: "dummy") {
+			id
+			name
+		}
+	}
+`
+
+	lex := NewLexer(input)
+
+	tests := []struct{
+		expectedLiteral string
+		expectedType    TokenType
+	}{
+		{"mutation", MUTATION},
+		{"{", LBRACE},
+		{"addProduct", IDENTIFIER},
+		{"(", LPAREN},
+		{"input", INPUT},
+		{":", COLON},
+		{"dummy", STRING},
+		{")", RPAREN},
+		{"{", LBRACE},
+		{"id", IDENTIFIER},
+		{"name", IDENTIFIER},
+		{"}", RBRACE},
+		{"}", RBRACE},
+	}
+
+	for i, ti := range tests {
+		tok := lex.NextToken()
+		if tok.Type != ti.expectedType {
+			t.Errorf("Failed to parse Token Type correctly. Expected %s Actual %s in test %d",
+				ti.expectedType,
+				tok.Type,
+				i + 1)
+		}
+
+		if tok.Literal != ti.expectedLiteral{
+			t.Errorf(
+				"Failed to parse Token Literal correctly. Expected %s Actual %s in test %d",
+				ti.expectedLiteral,
+				tok.Literal,
+				i + 1)
+		}
+	}
+}
