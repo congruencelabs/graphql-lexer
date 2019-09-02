@@ -29,50 +29,56 @@ func (l *Lexer) NextToken() Token {
 
 	switch l.value {
 	case ',':
-		tok = readToken(COMMA, l.value)
+		tok = readToken(COMMA, l.value, l.position, l.readPosition)
 	case ':':
-		tok = readToken(COLON, l.value)
+		tok = readToken(COLON, l.value, l.position, l.readPosition)
 	case '(':
-		tok = readToken(LPAREN, l.value)
+		tok = readToken(LPAREN, l.value, l.position, l.readPosition)
 	case ')':
-		tok = readToken(RPAREN, l.value)
+		tok = readToken(RPAREN, l.value, l.position, l.readPosition)
 	case '{':
-		tok = readToken(LBRACE, l.value)
+		tok = readToken(LBRACE, l.value, l.position, l.readPosition)
 	case '}':
-		tok = readToken(RBRACE, l.value)
+		tok = readToken(RBRACE, l.value, l.position, l.readPosition)
 	case '[':
-		tok = readToken(LBRACKET, l.value)
+		tok = readToken(LBRACKET, l.value, l.position, l.readPosition)
 	case ']':
-		tok = readToken(RBRACKET, l.value)
+		tok = readToken(RBRACKET, l.value, l.position, l.readPosition)
 	case '=':
-		tok = readToken(EQUALS, l.value)
+		tok = readToken(EQUALS, l.value, l.position, l.readPosition)
 	case '!':
-		tok = readToken(BANG, l.value)
+		tok = readToken(BANG, l.value, l.position, l.readPosition)
 	case '$':
-		tok = readToken(DOLLAR, l.value)
+		tok = readToken(DOLLAR, l.value, l.position, l.readPosition)
 	case '@':
-		tok = readToken(AT, l.value)
+		tok = readToken(AT, l.value, l.position, l.readPosition)
 	case '|':
-		tok = readToken(PIPE, l.value)
+		tok = readToken(PIPE, l.value, l.position, l.readPosition)
 	case 0:
 		tok.Literal = ""
 		tok.Type = EOF
 	default:
 		if isStringLiteral(l.value) {
+			tok.Position = l.position
 			tok.Literal = l.readStringLiteral()
 			tok.Type = STRING
+			tok.ReadPosition = l.readPosition
 			return tok
 		} else if isAlphabet(l.value) {
+			tok.Position = l.position
 			tok.Literal = l.readIdentifier()
 			tok.Type = LookupIdentifier(tok.Literal)
+			tok.ReadPosition = l.readPosition
 			return tok
 		} else if isDigit(l.value) {
+			tok.Position = l.position
 			tok.Type = INT
 			tok.Literal = l.readNumber()
+			tok.ReadPosition = l.readPosition
 			return tok
 		} else {
 			// TODO: Implement BLOCKSTRING, DIRECTIVE cases
-			tok = readToken(ILLEGAL, l.value)
+			tok = readToken(ILLEGAL, l.value, l.position, l.readPosition)
 		}
 	}
 
@@ -103,7 +109,7 @@ func (l *Lexer) readStringLiteral() string {
 		l.advance()
 	}
 	l.advance()
-	return l.input[pos:l.position - 1]
+	return l.input[pos : l.position-1]
 }
 
 func (l *Lexer) skipWhitespace() {
@@ -112,8 +118,13 @@ func (l *Lexer) skipWhitespace() {
 	}
 }
 
-func readToken(tokenType TokenType, literal byte) Token {
-	return Token{Literal: string(literal), Type: tokenType}
+func readToken(t TokenType, l byte, p int, rp int) Token {
+	return Token{
+		Literal:      string(l),
+		Type:         t,
+		Position:     p,
+		ReadPosition: rp,
+	}
 }
 
 func isAlphabet(c byte) bool {

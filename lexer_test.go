@@ -20,7 +20,7 @@ func TestLexerForTypeDef(t *testing.T) {
 `
 	lex := NewLexer(input)
 
-	tests := []struct{
+	tests := []struct {
 		expectedLiteral string
 		expectedType    TokenType
 	}{
@@ -61,15 +61,15 @@ func TestLexerForTypeDef(t *testing.T) {
 			t.Errorf("Failed to parse Token Type correctly. Expected %s Actual %s in test %d",
 				ti.expectedType,
 				tok.Type,
-				i + 1)
+				i+1)
 		}
 
-		if tok.Literal != ti.expectedLiteral{
+		if tok.Literal != ti.expectedLiteral {
 			t.Errorf(
 				"Failed to parse Token Literal correctly. Expected %s Actual %s in test %d",
 				ti.expectedLiteral,
 				tok.Literal,
-				i + 1)
+				i+1)
 		}
 	}
 }
@@ -89,7 +89,7 @@ func TestLexerForUnionType(t *testing.T) {
 
 	lex := NewLexer(input)
 
-	tests := []struct{
+	tests := []struct {
 		expectedLiteral string
 		expectedType    TokenType
 	}{
@@ -125,15 +125,15 @@ func TestLexerForUnionType(t *testing.T) {
 			t.Errorf("Failed to parse Token Type correctly. Expected %s Actual %s in test %d",
 				ti.expectedType,
 				tok.Type,
-				i + 1)
+				i+1)
 		}
 
-		if tok.Literal != ti.expectedLiteral{
+		if tok.Literal != ti.expectedLiteral {
 			t.Errorf(
 				"Failed to parse Token Literal correctly. Expected %s Actual %s in test %d",
 				ti.expectedLiteral,
 				tok.Literal,
-				i + 1)
+				i+1)
 		}
 	}
 }
@@ -151,7 +151,7 @@ func TestLexerForQuery(t *testing.T) {
 
 	lex := NewLexer(input)
 
-	tests := []struct{
+	tests := []struct {
 		expectedLiteral string
 		expectedType    TokenType
 	}{
@@ -177,15 +177,15 @@ func TestLexerForQuery(t *testing.T) {
 			t.Errorf("Failed to parse Token Type correctly. Expected %s Actual %s in test %d",
 				ti.expectedType,
 				tok.Type,
-				i + 1)
+				i+1)
 		}
 
-		if tok.Literal != ti.expectedLiteral{
+		if tok.Literal != ti.expectedLiteral {
 			t.Errorf(
 				"Failed to parse Token Literal correctly. Expected %s Actual %s in test %d",
 				ti.expectedLiteral,
 				tok.Literal,
-				i + 1)
+				i+1)
 		}
 	}
 }
@@ -202,7 +202,7 @@ func TestLexerForMutation(t *testing.T) {
 
 	lex := NewLexer(input)
 
-	tests := []struct{
+	tests := []struct {
 		expectedLiteral string
 		expectedType    TokenType
 	}{
@@ -227,15 +227,15 @@ func TestLexerForMutation(t *testing.T) {
 			t.Errorf("Failed to parse Token Type correctly. Expected %s Actual %s in test %d",
 				ti.expectedType,
 				tok.Type,
-				i + 1)
+				i+1)
 		}
 
-		if tok.Literal != ti.expectedLiteral{
+		if tok.Literal != ti.expectedLiteral {
 			t.Errorf(
 				"Failed to parse Token Literal correctly. Expected %s Actual %s in test %d",
 				ti.expectedLiteral,
 				tok.Literal,
-				i + 1)
+				i+1)
 		}
 	}
 }
